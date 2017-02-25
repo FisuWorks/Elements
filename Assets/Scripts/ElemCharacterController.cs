@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class ElemCharacterController : MonoBehaviour {
 
-	/** Probably should move this somewhere later. */
-	public enum Orientation { N, W, S, E, NW, NE, SW, SE };
-
 	[SerializeField]
 	private int walkSpeed = 5;
 
@@ -20,6 +17,16 @@ public class ElemCharacterController : MonoBehaviour {
 		set {
 			_orientation = value;
 			setAnimatorOrientation();
+		}
+	}
+
+	/** Character state of movement. */
+	private MovementState _movementState;
+	public MovementState movementState {
+		get { return _movementState; }
+		set {
+			_movementState = value;
+			animator.SetInteger("State", (int)value);
 		}
 	}
 
@@ -46,6 +53,7 @@ public class ElemCharacterController : MonoBehaviour {
 
 	public void Awake() {
 		animator = GetComponent<Animator>();
+		movementState = MovementState.IDLE;
 	}
 
 	void Start () {
@@ -53,11 +61,10 @@ public class ElemCharacterController : MonoBehaviour {
 	}
 	
 	void Update () {
-		// AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
-		checkOrientationKeys();
+		checkMovementKeys();
 	}
 
-	void checkOrientationKeys() {
+	void checkMovementKeys() {
 		bool left = Input.GetKey(KeyCode.A);
 		bool right = Input.GetKey(KeyCode.D);
 		bool up = Input.GetKey(KeyCode.W);
@@ -90,6 +97,11 @@ public class ElemCharacterController : MonoBehaviour {
 
 			Vector3 dv = new Vector3(moveX, moveY, 0).normalized * walkSpeed * Time.deltaTime;
 			transform.Translate(dv);
+
+			movementState = MovementState.WALK;
+		}
+		else {
+			movementState = MovementState.IDLE;
 		}
 	}
 }
