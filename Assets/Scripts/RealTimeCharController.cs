@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ElemCharacterController : MonoBehaviour {
+public class RealTimeCharacterController : MonoBehaviour {
 
 	[SerializeField]
 	private int walkSpeed = 5;
